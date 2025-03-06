@@ -11,6 +11,7 @@ import (
 	"github.com/cvele/reptask/internal/db"
 	"github.com/cvele/reptask/internal/routes"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
@@ -25,6 +26,12 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  120 * time.Second,
 	})
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*", // Allows all origins for demo purposes
+		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowMethods: "GET, POST, PUT, DELETE, OPTIONS",
+	}))
 
 	app.Use(logger.New())
 	app.Use(recover.New())
