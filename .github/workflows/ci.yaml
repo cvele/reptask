@@ -39,13 +39,18 @@ jobs:
     - run: flyctl deploy --remote-only --app ${{ secrets.FLY_APP_NAME }}
       env:
         FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-        
+
+    - run: cd frontend && npm run build
+      env:
+        VITE_API_URL: https://${{ secrets.FLY_APP_NAME }}.fly.dev/api/v1
+
     - name: Set Git identity
       run: |
         git config --global user.name "github-actions"
         git config --global user.email "github-actions@github.com"
 
-    - run: cd frontend && npm run predeploy && npm run deploy
-      env:
-        VITE_API_URL: https://${{ secrets.FLY_APP_NAME }}.fly.dev/api/v1
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
