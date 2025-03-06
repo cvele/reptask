@@ -3,10 +3,10 @@ name: CI and Deploy to Fly.io
 on:
   push:
     branches:
-      - main  # Trigger deployment on push to the main branch
+      - main
   pull_request:
     branches:
-      - main  # Trigger deployment on PR to the main branch
+      - main
 
 jobs:
   build:
@@ -39,6 +39,11 @@ jobs:
     - run: flyctl deploy --remote-only --app ${{ secrets.FLY_APP_NAME }}
       env:
         FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        
+    - name: Set Git identity
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
 
     - run: cd frontend && npm run predeploy && npm run deploy
       env:
