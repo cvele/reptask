@@ -40,4 +40,4 @@ jobs:
       env:
         FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-    - run: cd frontend && npm run predeploy && npm run deploy
+    - run: cd frontend && VITE_API_URL=https://repartnerstest.fly.dev/api/v1 npm run predeploy && npm run deploy
