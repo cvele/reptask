@@ -141,7 +141,6 @@ help:
 	@echo "  make docker-run    - Run Docker container"
 	@echo "  make docker-stop   - Stop Docker container"
 	@echo "  make docker-test   - Build, run container, execute API tests, stop container"
-	@echo "  make docker-push   - Push Docker image to registry"
 	@echo "  make tidy          - Tidy up Go modules"
 	@echo "  make deps          - Install dependencies"
 	@echo "  make rebuild       - Clean, tidy, and build"

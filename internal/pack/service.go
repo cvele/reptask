@@ -1,7 +1,3 @@
-// NOTE FROM DEV: Initially considered using a greedy algorithm (always picking the largest available pack first),
-// but realized this could lead to suboptimal results (excess items or more packs than necessary).
-// Switched to dynamic programming to ensure the optimal solution in all cases.
-
 package pack
 
 import (
@@ -10,9 +6,13 @@ import (
 	"math"
 )
 
-// CalculateOptimalPacks determines optimal pack distribution for the given order quantity.
-// It uses dynamic programming to minimize the total number of items sent first,
-// and secondly minimizes the total number of packs used.
+// CalculateOptimalPacks determines the most efficient way to fulfill a customer's order,
+// balancing two goals:
+// 1. Sending as few extra items as possible beyond the customer's request.
+// 2. Using the fewest number of packs possible.
+//
+// This approach we always find the best solution, even if a greedy approach
+// (selecting the largest packs first) might seem intuitive at first.
 func CalculateOptimalPacks(order int) (map[int]int, error) {
 	if order <= 0 {
 		return nil, errors.New("order must be greater than zero")
@@ -28,16 +28,16 @@ func CalculateOptimalPacks(order int) (map[int]int, error) {
 		return nil, errors.New("no pack sizes available")
 	}
 
-	// Determine the largest available pack size
+	// Identify the largest pack size available to handle worst-case overshoot scenarios.
 	maxPack := packs[0].Size
 
-	// Dynamic programming array length set to cover all possible minimal overshoots
+	// dpLen defines the length of our DP array to account for the largest possible overshoot.
 	dpLen := order + maxPack
 
-	// dp[i] stores the minimum number of packs required to fulfill an order of exactly i items
+	// Initialize dp array to store the minimum number of packs required for each possible quantity.
 	dp := make([]int, dpLen)
 
-	// packChoice[i] stores the pack size chosen to reach a total of exactly i items optimally
+	// packChoice remembers the pack size chosen for each total quantity.
 	packChoice := make([]int, dpLen)
 
 	// Initialize dp array with maximum integer value to indicate initially unreachable states
@@ -46,12 +46,11 @@ func CalculateOptimalPacks(order int) (map[int]int, error) {
 	}
 	dp[0] = 0 // Base case: 0 packs required to fulfill an order of 0 items
 
-	// Populate the dp array
 	for i := 1; i < dpLen; i++ {
 		for _, pack := range packs {
 			// Check if current pack can be used to reach a total of i items
 			if i-pack.Size >= 0 && dp[i-pack.Size] != math.MaxInt32 {
-				// Update dp[i] if a better (fewer packs) solution is found
+				// Found a better (smaller) combination of packs for this total.
 				if dp[i-pack.Size]+1 < dp[i] {
 					dp[i] = dp[i-pack.Size] + 1
 					packChoice[i] = pack.Size
@@ -60,7 +59,7 @@ func CalculateOptimalPacks(order int) (map[int]int, error) {
 		}
 	}
 
-	// Find the smallest number of items greater than or equal to the order that can be fulfilled
+	// Find the optimal solution: the smallest total >= order that we can fulfill.
 	bestTotalItems := -1
 	for totalItems := order; totalItems < dpLen; totalItems++ {
 		if dp[totalItems] != math.MaxInt32 {
@@ -69,12 +68,11 @@ func CalculateOptimalPacks(order int) (map[int]int, error) {
 		}
 	}
 
-	// Return an error if no valid solution exists
 	if bestTotalItems == -1 {
 		return nil, errors.New("unable to fulfill order with available pack sizes")
 	}
 
-	// Reconstruct the optimal pack distribution from the dp solution
+	// Reconstruct the exact distribution of packs based on the computed solution.
 	result := make(map[int]int)
 	remaining := bestTotalItems
 	for remaining > 0 {
