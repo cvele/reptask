@@ -77,7 +77,10 @@ The React frontend offers a ui experience to interact with the backend API, feat
 
 ### 🏃‍♂️ Running Frontend Locally To run the frontend locally: 
 
-```bash cd frontend npm install && npm run dev ``` 
+```bash 
+cd frontend 
+npm install && npm run dev
+``` 
 
 The frontend is hosted on GitHub Pages for easy accessibility. 
 
