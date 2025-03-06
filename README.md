@@ -11,7 +11,7 @@ This repository contains an application that calculates optimal pack distributio
 
 ## Backend (Golang API) 
 
-Solution is deployed to **fly.io**, so expect a bit of latecy on initial request.
+> Solution is deployed to **fly.io**, so expect a bit of latecy on initial request.
 
 Core function `CalculateOptimalPacks` is [documented separatly](internal/pack/README.md).
 
