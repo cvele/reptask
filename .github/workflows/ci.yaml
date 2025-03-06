@@ -40,7 +40,7 @@ jobs:
       env:
         FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-    - run: cd frontend && npm run build
+    - run: cd frontend && npm install && npm run build
       env:
         VITE_API_URL: https://${{ secrets.FLY_APP_NAME }}.fly.dev/api/v1
 
